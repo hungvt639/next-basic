@@ -4,9 +4,9 @@ import { composeWithDevTools } from "redux-devtools-extension";
 import reducer from "./reduces/index";
 let store;
 const initialState = {
-    lastUpdate: 0,
-    light: false,
-    count: 0,
+    // lastUpdate: 0,
+    // light: false,
+    // count: 0,
 };
 function initStore(preloadedState = initialState) {
     return createStore(

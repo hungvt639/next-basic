@@ -4,12 +4,16 @@ import { useRouter } from "next/router";
 import * as action from "../store/actions/user";
 import getFactory from "../request/index";
 import cookies from "next-cookies";
-
+import client from "../middlewares/cllient";
 const profile = () => {
+    // console.log("props", user);
     const router = useRouter();
-    const [token, setToken] = useState(cookies("/").token);
+    const [token] = useState(cookies("/").token);
+
     const dispatch = useDispatch();
+    const [loading, setLoading] = useState(true);
     const user = useSelector((state) => state.user.user);
+
     useEffect(() => {
         async function getUser() {
             try {
@@ -24,13 +28,16 @@ const profile = () => {
         else {
             getUser();
         }
-    }, [token]);
+        // checkUser(user, router);
+        setLoading(false);
+    }, []);
     function logOut() {
         document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
         dispatch(action.deleteUser());
-        setToken("");
+        // setToken("");
+        router.push("/login");
     }
-    if (token) {
+    if (!loading && user) {
         return (
             <div>
                 <h1>Thông tin cá nhân</h1>
@@ -48,7 +55,7 @@ const profile = () => {
             </div>
         );
     } else {
-        return <div>Vui lòng đăng nhập</div>;
+        return <div>Loading...</div>;
     }
 };
 

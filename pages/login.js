@@ -3,7 +3,7 @@ import getFactory from "../request/index";
 import { useDispatch } from "react-redux";
 import * as action from "../store/actions/user";
 import { useRouter } from "next/router";
-import cookies from "next-cookies";
+import Link from "next/link";
 const Login = () => {
     const router = useRouter();
     const dispatch = useDispatch();
@@ -11,23 +11,25 @@ const Login = () => {
     const [password, setPassword] = useState("");
     async function submit(e) {
         e.preventDefault();
-        try {
-            const API = getFactory("user");
-            const res = await API.signIn({
-                username: username,
-                password: password,
-            });
-            dispatch(action.addUser(res.user));
-            localStorage.setItem("token", res.token);
-            document.cookie = `token=${res.token}; path=/`;
-            router.push("/profile");
-        } catch (e) {
-            console.log(e);
+        if (username && password) {
+            try {
+                const API = getFactory("user");
+                const res = await API.signIn({
+                    username: username,
+                    password: password,
+                });
+                dispatch(action.addUser(res.user));
+                // localStorage.setItem("token", res.token);
+                document.cookie = `token=${res.token}; path=/`;
+                router.push("/profile");
+            } catch (e) {
+                console.log(e);
+            }
         }
     }
     return (
-        <div>
-            <form onSubmit={(e) => submit(e)}>
+        <div className="forms">
+            <form className="form" onSubmit={(e) => submit(e)}>
                 <input
                     name="username"
                     value={username}
@@ -42,6 +44,10 @@ const Login = () => {
                     type="password"
                 />
                 <button type="submit">Đăng nhập</button>
+                <p>
+                    Bạn chưa có tài khoản? Đăng ký tại{" "}
+                    <Link href="/register">đây</Link>
+                </p>
             </form>
         </div>
     );

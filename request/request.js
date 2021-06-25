@@ -1,9 +1,12 @@
 import axios from "axios";
 // import urls from '../const';
+import cookies from "next-cookies";
 const http = require("http");
 const https = require("https");
 
 export default function getInstanceAxios(baseAPI, isToken) {
+    const token = cookies("/").token;
+    console.log("token", token);
     const instance = axios.create({
         baseURL: baseAPI,
         httpAgent: new http.Agent({ keepAlive: true }),
@@ -16,8 +19,8 @@ export default function getInstanceAxios(baseAPI, isToken) {
                 Accept: "*/*",
                 "Content-Type": "application/json",
                 // "Content-Type": "multipart/form-data",
-                // Authorization: "Token " + isToken,
-                Authorization: localStorage.getItem("token"),
+                Authorization: token,
+                // Authorization: localStorage.getItem("token"),
                 // Host: urls,
                 // eslint-disable-next-line no-useless-computed-key
                 // ["secret-key"]: localStorage.getItem("secretKey"),
