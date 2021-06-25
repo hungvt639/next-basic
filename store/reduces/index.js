@@ -1,8 +1,8 @@
-import clock from "./clock";
 import { combineReducers } from "redux";
 import token from "./token";
+import user from "./user";
 const reducer = combineReducers({
-    clock: clock,
     token: token,
+    user: user,
 });
 export default reducer;

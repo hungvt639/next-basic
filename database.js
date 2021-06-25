@@ -23,10 +23,12 @@ import * as env from "./env";
 const connection = {};
 
 async function dbConnect() {
+    console.log("connect db");
     if (connection.isConnected) return;
     const db = await mongoose.connect(env.DB, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
+        useFindAndModify: false,
     });
 
     connection.isConnected = db.connections[0].readyState;

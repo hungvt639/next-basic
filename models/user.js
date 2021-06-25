@@ -1,7 +1,7 @@
-// import mongoose from "mongoose";
-let mongoose = require("mongoose");
+import mongoose from "mongoose";
+var Schema = mongoose.Schema;
 
-let usersSchema = new mongoose.Schema({
+let usersSchema = new Schema({
     username: {
         type: String,
         required: true,
@@ -17,5 +17,6 @@ let usersSchema = new mongoose.Schema({
         required: false,
     },
 });
-
-module.exports = mongoose.model.Users || mongoose.model("Users", usersSchema);
+mongoose.models = {};
+var User = mongoose.model("User", usersSchema);
+export default User;

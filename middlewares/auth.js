@@ -1,39 +1,28 @@
 import jwt from "jsonwebtoken";
-import * as env from "../env";
-import dbConnect from "../database";
+import User from "../models/user";
 
-let UsersModel = require("../models/user");
-
-dbConnect();
-async function checkToken(req, res, next) {
+const checkToken = (hander) => (req, res) => {
+    console.log("authen");
     try {
         const token = req.headers.authorization;
-        await jwt.verify(token, env.KEY, async (err, decoded) => {
-            if (decoded && decoded.username) {
-                console.log("check", decoded.username);
-
-                const user = await UsersModel.findOne({
-                    username: decoded.username,
-                });
-                console.log("u", user);
+        jwt.verify(token, process.env.secret, async (err, payload) => {
+            if (payload) {
+                const user = await User.findOne({ username: payload.username });
                 if (user) {
                     req.user = user;
-                    // return user;
+                    return hander(req, res);
                 } else {
-                    res.status(401).json({ message: "token bị lỗi" });
+                    res.status(401).json({
+                        message: "Token không đúng với tài khoản nào",
+                    });
                 }
-                res.status(200).json({ message: decoded });
-            }
-            if (err) {
+            } else {
                 res.status(401).json({ message: err.message });
             }
         });
-    } catch (err) {
-        res.status(401).json({ message: err.message });
+    } catch (e) {
+        res.status(401).json({ message: e.message });
     }
-}
+};
 
-// module.exports = {
-//     checkToken,
-// };
 export default checkToken;

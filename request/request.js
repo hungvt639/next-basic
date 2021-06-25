@@ -16,8 +16,8 @@ export default function getInstanceAxios(baseAPI, isToken) {
                 Accept: "*/*",
                 "Content-Type": "application/json",
                 // "Content-Type": "multipart/form-data",
-                Authorization: "Token " + isToken,
-
+                // Authorization: "Token " + isToken,
+                Authorization: localStorage.getItem("token"),
                 // Host: urls,
                 // eslint-disable-next-line no-useless-computed-key
                 // ["secret-key"]: localStorage.getItem("secretKey"),

@@ -1,44 +1,45 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/router";
-import * as t from "../store/actions/token";
+import * as action from "../store/actions/user";
 import getFactory from "../request/index";
+import cookies from "next-cookies";
 
-const Profile = () => {
+const profile = () => {
     const router = useRouter();
-    const token = useSelector((state) => state.token);
+    const [token, setToken] = useState(cookies("/").token);
     const dispatch = useDispatch();
-    const [user, setUser] = useState({});
+    const user = useSelector((state) => state.user.user);
     useEffect(() => {
         async function getUser() {
             try {
                 const API = getFactory("user");
-                const res = await API.getProfile(token.token);
-                console.log(res);
-                setUser(res);
+                const res = await API.getProfile();
+                dispatch(action.addUser(res.user));
             } catch (e) {
                 console.log(e);
             }
         }
-        if (!token.token) router.push("/login");
+        if (!token) router.push("/login");
         else {
             getUser();
         }
-    }, [token.token]);
+    }, [token]);
     function logOut() {
-        dispatch(t.deleteToken());
+        document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
+        dispatch(action.deleteUser());
+        setToken("");
     }
-    if (token.token) {
+    if (token) {
         return (
             <div>
                 <h1>Thông tin cá nhân</h1>
-                {Object.keys(user).length === 0 ? (
+                {!user ? (
                     <p>Không có dữ liệu</p>
                 ) : (
                     <div>
                         <p>
-                            <strong>Họ-tên:</strong>{" "}
-                            {`${user.last_name} ${user.first_name}`}
+                            <strong>Họ-tên:</strong> {user.fullname}
                         </p>
                     </div>
                 )}
@@ -50,4 +51,5 @@ const Profile = () => {
         return <div>Vui lòng đăng nhập</div>;
     }
 };
-export default Profile;
+
+export default profile;

@@ -1,8 +1,12 @@
-import dbConnect from "../../database";
-let UsersModel = require("../../models/user");
+// import dbConnect from "../../database";
+import connectDB from "../../middlewares/mongodb";
+
+// let UserModel = require("../../models/user");
+import User from "../../models/user";
+
 const bcrypt = require("bcrypt");
-dbConnect();
-export default async function handler(req, res) {
+// dbConnect();
+async function register(req, res) {
     const { method } = req;
     switch (method) {
         case "POST": {
@@ -10,7 +14,7 @@ export default async function handler(req, res) {
                 const value = req.body;
                 const salt = bcrypt.genSaltSync(10);
                 value.password = bcrypt.hashSync(value.password, salt);
-                const user = await UsersModel.create(value);
+                const user = await User.create(value);
                 res.status(200).json({ message: "ok", data: user });
             } catch (e) {
                 res.status(400).json({ message: "error" });
@@ -23,3 +27,4 @@ export default async function handler(req, res) {
     }
     return;
 }
+export default connectDB(register);

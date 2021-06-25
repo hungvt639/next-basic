@@ -1,24 +1,17 @@
 import jwt from "jsonwebtoken";
 import * as env from "../../env";
-import dbConnect from "../../database";
-
-let UsersModel = require("../../models/user");
+import connectDB from "../../middlewares/mongodb";
+import User from "../../models/user";
 const bcrypt = require("bcrypt");
 
-dbConnect();
-export default async function handler(req, res) {
-    if (!req.body) {
-        res.statusCode = 404;
-        res.end("Error404");
-        return;
-    }
+async function login(req, res) {
     const { method } = req;
     switch (method) {
         case "POST": {
             try {
                 const { username, password } = req.body;
 
-                const user = await UsersModel.findOne({ username: username });
+                const user = await User.findOne({ username: username });
                 if (!user) {
                     res.status(400).json({
                         message: "Sai tên tài khoản hoặc mật khẩu!",
@@ -35,13 +28,15 @@ export default async function handler(req, res) {
                 }
 
                 const token = jwt.sign({ username }, env.KEY);
+                user.password = "";
                 res.status(200).json({
                     message: "ok",
                     token: token,
+                    user: user,
                 });
             } catch (e) {
                 res.status(400).json({
-                    message: "Đã có lỗi sảy ra, bạn vui lòng đăng nhập lại!",
+                    message: e.message,
                 });
             }
             break;
@@ -52,3 +47,4 @@ export default async function handler(req, res) {
     }
     return;
 }
+export default connectDB(login);

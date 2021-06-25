@@ -1,42 +1,41 @@
 import React, { useState } from "react";
 import getFactory from "../request/index";
-import { useSelector, useDispatch } from "react-redux";
-import * as t from "../store/actions/token";
+import { useDispatch } from "react-redux";
+import * as action from "../store/actions/user";
 import { useRouter } from "next/router";
+import cookies from "next-cookies";
 const Login = () => {
     const router = useRouter();
-    console.log(router);
     const dispatch = useDispatch();
-    const token = useSelector((state) => state.token);
-    // console.log("t", token);
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const add = (res) => dispatch(t.addToken(res.token));
     async function submit(e) {
         e.preventDefault();
-        // console.log("login", env.URL);
-        // try {
-        const API = getFactory("user");
-        const res = await API.signIn({
-            username: username,
-            password: password,
-        });
-
-        add(res);
-        router.push("/profile");
-        // } catch (e) {
-        //     console.log(e);
-        // }
+        try {
+            const API = getFactory("user");
+            const res = await API.signIn({
+                username: username,
+                password: password,
+            });
+            dispatch(action.addUser(res.user));
+            localStorage.setItem("token", res.token);
+            document.cookie = `token=${res.token}; path=/`;
+            router.push("/profile");
+        } catch (e) {
+            console.log(e);
+        }
     }
     return (
         <div>
             <form onSubmit={(e) => submit(e)}>
                 <input
+                    name="username"
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     placeholder="Tài khoản"
                 />
                 <input
+                    name="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     placeholder="Mật khẩu"
