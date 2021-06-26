@@ -7,8 +7,8 @@ import getFactory from "../../request/index";
 import cookies from "next-cookies";
 import { useAuth } from "../contexts/auth";
 const Header = (props) => {
-    const { user } = useAuth();
-    console.log("h", user);
+    // const { user } = useAuth();
+    // console.log("h", user);
     // const router = useRouter();
     // const [token] = useState(cookies("/").token);
     // const [loading, setLoading] = useState(true);

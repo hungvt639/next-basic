@@ -1,11 +1,13 @@
 import React from "react";
 import { useRouter } from "next/router";
 import Header from "../components/header/header";
+import { useSelector } from "react-redux";
 
 import { useAuth } from "../components/contexts/auth";
 
 const profile = () => {
-    const { user, loading, logout } = useAuth();
+    const { users, loading, logout } = useAuth();
+    const user = useSelector((s) => s.user.user);
     const router = useRouter();
     function logOut() {
         logout();

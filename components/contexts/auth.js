@@ -3,12 +3,15 @@ import cookies from "next-cookies";
 import Router, { useRouter } from "next/router";
 import getFactory from "../../request";
 import LoadingScreen from "./LoadingScreen";
+import { useSelector, useDispatch } from "react-redux";
+import * as action from "../../store/actions/user";
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-    const [user, setUser] = useState(null);
+    // const [user, setUser] = useState(null);
+    const user = useSelector((s) => s.user.user);
     const [loading, setLoading] = useState(true);
-
+    const dispatch = useDispatch();
     useEffect(() => {
         async function loadUserFromCookies() {
             const token = cookies("/").token;
@@ -16,7 +19,8 @@ export const AuthProvider = ({ children }) => {
                 try {
                     const API = getFactory("user");
                     const res = await API.getProfile();
-                    setUser(res.user);
+                    // setUser(res.user);
+                    dispatch(action.addUser(res.user));
                 } catch (e) {
                     console.log(e);
                 }
@@ -40,7 +44,8 @@ export const AuthProvider = ({ children }) => {
                 username: username,
                 password: password,
             });
-            setUser(res.user);
+            // setUser(res.user);
+            dispatch(action.addUser(res.user));
             document.cookie = `token=${res.token}; path=/`;
             window.location.pathname = "/";
         } catch (e) {
@@ -51,7 +56,8 @@ export const AuthProvider = ({ children }) => {
 
     const logout = () => {
         document.cookie = `token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT`;
-        setUser(null);
+        // setUser(null);
+        dispatch(action.deleteUser());
         window.location.pathname = "/login";
     };
 
