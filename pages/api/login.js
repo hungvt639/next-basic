@@ -27,7 +27,14 @@ async function login(req, res) {
                     return;
                 }
 
-                const token = jwt.sign({ username }, env.KEY);
+                const token = jwt.sign(
+                    {
+                        _id: user.id,
+                        username: user.username,
+                        fullname: user.fullname,
+                    },
+                    env.KEY
+                );
                 user.password = "";
                 res.status(200).json({
                     message: "ok",

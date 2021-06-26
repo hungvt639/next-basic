@@ -20,14 +20,15 @@ const client = (hander) => (props) => {
                     return res.user;
                 }
                 const u = getProfile();
-
-                return hander({ ...props, user: u });
+                console.log("xx");
+                props = { ...props, user: u };
+                return hander(props);
             } catch (e) {
                 console.log(e);
             }
         } else {
-            return router.push("/login");
-            // return hander(props);
+            // return router.push("/login");
+            return hander(props);
         }
     }
     return hander(props);

@@ -6,7 +6,6 @@ const https = require("https");
 
 export default function getInstanceAxios(baseAPI, isToken) {
     const token = cookies("/").token;
-    console.log("token", token);
     const instance = axios.create({
         baseURL: baseAPI,
         httpAgent: new http.Agent({ keepAlive: true }),

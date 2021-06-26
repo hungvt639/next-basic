@@ -7,12 +7,11 @@ async function profile(req, res) {
     switch (method) {
         case "GET": {
             try {
-                console.log("profile");
                 const user = req.user;
                 // let user = await User.findOne({
                 //     username: req.user.username,
                 // });
-                user.password = "";
+                // user.password = "";
                 res.status(200).json({ user: user });
             } catch (e) {
                 res.status(400).json({

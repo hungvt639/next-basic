@@ -6,6 +6,7 @@ const initialState = {
 const user = (state = initialState, action) => {
     switch (action.type) {
         case c.ADD_USER:
+            console.log("aaaa");
             return {
                 ...state,
                 user: action.user,

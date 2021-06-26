@@ -32,3 +32,8 @@ p {
 .form button {
     margin: 10px 0 0;
 }
+.header {
+    background-color: red;
+    height: 100px;
+    width: 100px;
+}
